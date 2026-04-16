@@ -1,6 +1,7 @@
 package ar.edu.utn.ba.ddsi.smartlife.sales_service.models.entities.venta;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,19 +11,20 @@ import java.util.List;
 @Getter
 public class Venta {
 
-	private final long id;
+	@Setter
+	private Long id;
 	private LocalDate fechaRegistro;
 	private List<ItemVenta> items;
 
-	public Venta(long id) {
+	public Venta(Long id) {
 		this.id = id;
 		this.fechaRegistro = LocalDate.now();
 		this.items = new ArrayList<>();
 	}
 
-    public void agregarItem(ItemVenta ... items) {
-        Collections.addAll(this.items, items);
-    }
+	public void agregarItem(ItemVenta... items) {
+		Collections.addAll(this.items, items);
+	}
 
 	public double totalPrecioBase() {
 		return this.items.stream().mapToDouble(ItemVenta::subtotalPrecioBase).sum();

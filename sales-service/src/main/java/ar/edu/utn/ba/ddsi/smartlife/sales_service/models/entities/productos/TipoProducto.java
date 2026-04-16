@@ -10,11 +10,18 @@ import java.util.List;
 
 @Getter
 public class TipoProducto {
-    @Setter
+	@Setter
+	private Long id;
+	@Setter
 	private String descripcion;
 	private final List<Impuesto> impuestos;
 
 	public TipoProducto(String descripcion) {
+		this(null, descripcion);
+	}
+
+	public TipoProducto(Long id, String descripcion) {
+		this.id = id;
 		this.descripcion = descripcion;
 		this.impuestos = new ArrayList<>();
 	}
@@ -24,6 +31,6 @@ public class TipoProducto {
 	}
 
 	public double totalImpuestos(Producto producto) {
-        return this.impuestos.stream().mapToDouble(i -> i.calcular(producto)).sum();
+		return this.impuestos.stream().mapToDouble(i -> i.calcular(producto)).sum();
 	}
 }
