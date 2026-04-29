@@ -25,11 +25,6 @@ public final class EnAuge extends EstadoTendencia {
 			+ " (" + producto.getCategoria() + " " + precio + ")";
 	}
 
-	@Override
-	public String etiqueta() {
-		return "En auge";
-	}
-
 	private boolean cumpleParaEnTendencia(Producto producto) {
 		return ventasEnEsteEstado(producto) > ventasMinimasParaAscender
                 && likesEnEsteEstado(producto) > likesMinimasParaAscender;

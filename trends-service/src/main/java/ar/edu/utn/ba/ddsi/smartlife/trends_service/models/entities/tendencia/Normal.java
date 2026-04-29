@@ -18,11 +18,6 @@ public final class Normal extends EstadoTendencia {
 	}
 
 	@Override
-	public String etiqueta() {
-		return "Normal";
-	}
-
-	@Override
 	public void likePara(Producto producto) {
         //
 	}

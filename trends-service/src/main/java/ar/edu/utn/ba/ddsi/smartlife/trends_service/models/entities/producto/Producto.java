@@ -21,7 +21,6 @@ public class Producto {
 	private int likes;
 	private int dislikes;
 	private LocalDateTime fechaUltimaVenta;
-	private boolean promocionBloqueadaPorDislikes;
 	private EstadoTendencia estado;
 
 	public Producto() {
@@ -29,7 +28,6 @@ public class Producto {
 	}
 
 	public void registrarVenta(int cantidad) {
-		this.promocionBloqueadaPorDislikes = false;
 		this.ventasAcumuladas += cantidad;
 		this.fechaUltimaVenta = LocalDateTime.now();
 		this.estado.nuevaVentaDe(this);

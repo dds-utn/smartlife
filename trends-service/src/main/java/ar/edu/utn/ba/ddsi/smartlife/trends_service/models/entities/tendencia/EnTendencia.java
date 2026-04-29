@@ -19,11 +19,6 @@ public final class EnTendencia extends EstadoTendencia {
 	}
 
 	@Override
-	public String etiqueta() {
-		return "En tendencia";
-	}
-
-	@Override
 	public void likePara(Producto producto) {
 		volverANormalSiNoTieneVentasRecientes(producto);
 	}

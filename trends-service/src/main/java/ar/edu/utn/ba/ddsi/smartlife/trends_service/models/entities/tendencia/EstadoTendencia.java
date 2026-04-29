@@ -17,8 +17,6 @@ public abstract class EstadoTendencia {
 		return icono().texto() + " - " + leyenda(producto);
 	}
 
-	public abstract String etiqueta();
-
 	public abstract void likePara(Producto producto);
 
 	public abstract void dislikePara(Producto producto);
