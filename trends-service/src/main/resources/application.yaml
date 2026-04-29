@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: trends-service
+server:
+  port: 8083

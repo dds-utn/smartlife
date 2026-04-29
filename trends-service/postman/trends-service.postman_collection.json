@@ -1,0 +1,91 @@
+{
+  "info": {
+    "_postman_id": "c7e2b9a1-5d41-4f2e-9c12-aabbccddeeff",
+    "name": "SmartLife Trends Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección para probar tendencias de consumo (trends-service). Puerto por defecto 8083."
+  },
+  "item": [
+    {
+      "name": "Tendencias",
+      "item": [
+        {
+          "name": "Crear producto (POST /trends-service/trends/productos)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comercioId\": 1,\n  \"nombre\": \"Producto Demo\",\n  \"categoria\": \"General\",\n  \"precioBase\": 99.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos"]
+            },
+            "description": "comercioId 1 proviene del seed inicial (Comercio Demo)."
+          }
+        },
+        {
+          "name": "Obtener tendencia (GET /trends-service/trends/productos/{id})",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "{{productoId}}"]
+            }
+          }
+        },
+        {
+          "name": "Obtener leyenda (GET /trends-service/trends/productos/{id}/leyenda)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}/leyenda",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "{{productoId}}", "leyenda"]
+            }
+          }
+        },
+        {
+          "name": "Like (POST /trends-service/trends/productos/{id}/likes)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}/likes",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "{{productoId}}", "likes"]
+            }
+          }
+        },
+        {
+          "name": "Dislike (POST /trends-service/trends/productos/{id}/dislikes)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}/dislikes",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "{{productoId}}", "dislikes"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8083"
+    },
+    {
+      "key": "productoId",
+      "value": "1"
+    }
+  ]
+}

@@ -12,6 +12,7 @@
   <modules>
     <module>common-lib</module>
     <module>sales-service</module>
+    <module>trends-service</module>
   </modules>
 
   <properties>

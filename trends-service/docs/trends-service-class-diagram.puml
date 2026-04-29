@@ -1,0 +1,84 @@
+@startuml
+' https://plantuml.com/class-diagram
+
+package "Dominio" {
+  class Comercio {
+    - id: Long
+    - nombre: String
+  }
+
+  class Producto {
+    - id: Long
+    - comercio: Comercio
+    - nombre: String
+    - categoria: String
+    - precioBase: double
+    - ventasAcumuladas: long
+    - likes: long
+    - dislikes: long
+    - fechaUltimaVenta: LocalDateTime
+    - promocionBloqueadaPorDislikes: boolean
+    - estado: EstadoTendencia
+    --
+    registrarVenta(cantidad: long, ahora: Instant): void
+    recibirLike(): void
+    recibirDislike(): void
+    actualizarEstadoPorTiempo(ahora: Instant): void
+    iconoTexto(): String
+    leyenda(): String
+    detalle(): String
+    etiqueta(): String
+  }
+
+  abstract class EstadoTendencia {
+    #SEP: String
+    +iconoTexto(): String
+    +leyenda(producto: Producto): String
+    +detalle(producto: Producto): String
+    +actualizarSegunTiempo(producto: Producto, ahora: Instant): void
+    {abstract} icono(): Icono
+    {abstract} textoLeyenda(producto: Producto): String
+    {abstract} etiqueta(): String
+    {abstract} likePara(producto: Producto): void
+    {abstract} dislikePara(producto: Producto): void
+    {abstract} nuevaVentaDe(producto: Producto): void
+  }
+
+  class Normal
+
+  class EnAuge
+
+  class EnTendencia
+
+  class Icono {
+    + CHART: Icono
+    + ROCKET: Icono
+    + FIRE: Icono
+    --
+    texto(): String
+  }
+}
+
+package "Aplicación" {
+  interface TrendProductoService {
+    obtenerTendencia(productoId: Long): ProductoTrendResponse
+    obtenerLeyenda(productoId: Long): LeyendaResponse
+    crear(request: ProductoCreateRequest): ProductoTrendResponse
+    registrarLike(productoId: Long): ProductoTrendResponse
+    registrarDislike(productoId: Long): ProductoTrendResponse
+    procesarVentaRegistrada(evento: VentaRegistradaEvento): void
+  }
+}
+
+Producto --> Comercio
+Producto --> EstadoTendencia
+Normal --|> EstadoTendencia
+EnAuge --|> EstadoTendencia
+EnTendencia --|> EstadoTendencia
+EstadoTendencia ..> Icono
+EstadoTendencia ..> Producto
+
+TrendProductoService ..> ProductoTrendResponse
+TrendProductoService ..> VentaRegistradaEvento
+
+@enduml

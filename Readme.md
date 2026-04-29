@@ -22,10 +22,11 @@ El código de este repositorio está pensado para **respetar ese enunciado** (en
 smartlife/
 ├── pom.xml                 # POM padre: versiones y dependencyManagement
 ├── common-lib/             # Librería compartida (JAR), disponible en el reactor
-└── sales-service/        # Servicio de ventas — puerto 8082 (ver application.yaml)
+├── sales-service/          # Servicio de ventas — puerto 8082 (ver application.yaml)
+└── trends-service/         # Servicio de tendencias de consumo — puerto 8083 (ver application.yaml)
 ```
 
-`common-lib` forma parte del reactor Maven; los builds Docker usan la raíz como contexto para resolver el POM padre y los módulos (`-pl sales-service -am`).
+`common-lib` forma parte del reactor Maven; los builds Docker usan la raíz como contexto para resolver el POM padre y los módulos (por ejemplo `-pl sales-service -am` o `-pl trends-service -am`).
 
 ---
 
@@ -53,7 +54,7 @@ Todos los comandos se ejecutan desde la **raíz del proyecto**.
 mvn clean install
 ```
 
-Esto construye `common-lib` y luego `sales-service` según el orden del reactor.
+Esto construye `common-lib`, `sales-service`, `trends-service` y el resto del reactor según el orden definido en el POM padre.
 
 ### Ejecutar el servicio de ventas
 
@@ -62,6 +63,14 @@ mvn spring-boot:run -pl sales-service
 ```
 
 El puerto por defecto está definido en `sales-service/src/main/resources/application.yaml` (8082).
+
+### Ejecutar el servicio de tendencias
+
+```bash
+mvn spring-boot:run -pl trends-service
+```
+
+El puerto por defecto está definido en `trends-service/src/main/resources/application.yaml` (8083).
 
 ---
 
@@ -77,17 +86,27 @@ Desde la raíz del proyecto, usando el Dockerfile del servicio con `-f` y contex
 docker build -t sales-service-img -f sales-service/Dockerfile .
 ```
 
+Para `trends-service`:
+
+```bash
+docker build -t trends-service-img -f trends-service/Dockerfile .
+```
+
 ### Ejecutar el contenedor
 
-Ajustá el mapeo de puertos al que exponga la aplicación dentro del contenedor (en `application.yaml` está **8082**):
+Ajustá el mapeo de puertos al que exponga la aplicación dentro del contenedor (en `application.yaml` está **8082** para ventas y **8083** para tendencias):
 
 ```bash
 docker run -p 8082:8082 sales-service-img
 ```
 
+```bash
+docker run -p 8083:8083 trends-service-img
+```
+
 ### Nota sobre `ARG SERVICE_NAME`
 
-El Dockerfile define `ARG SERVICE_NAME` (por defecto `sales-service`). Solo hace falta sobreescribirlo si reutilizás el mismo patrón de build para otro módulo:
+El Dockerfile define `ARG SERVICE_NAME` (por defecto `sales-service` o `trends-service` según la carpeta). Solo hace falta sobreescribirlo si reutilizás el mismo patrón de build para otro módulo:
 
 ```bash
 docker build --build-arg SERVICE_NAME=otro-service -f otro-service/Dockerfile .
@@ -97,4 +116,4 @@ docker build --build-arg SERVICE_NAME=otro-service -f otro-service/Dockerfile .
 
 ## Estado del proyecto
 
-`sales-service` concentra el dominio de ventas alineado al enunciado SmartLife (comercio, productos, ventas, impuestos, observadores, etc.). `common-lib` está preparada para código compartido entre servicios a medida que el trabajo práctico lo requiera.
+`sales-service` concentra el dominio de ventas alineado al enunciado SmartLife (comercio, productos, ventas, impuestos, observadores, etc.). `trends-service` expone indicadores de tendencia de consumo (nivel, ícono y leyenda por producto). `common-lib` está preparada para código compartido entre servicios a medida que el trabajo práctico lo requiera.
