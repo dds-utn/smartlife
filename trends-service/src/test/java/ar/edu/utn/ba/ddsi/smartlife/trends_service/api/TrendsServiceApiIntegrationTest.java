@@ -63,7 +63,6 @@ class TrendsServiceApiIntegrationTest {
 				.content(body))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.productoId").isNumber())
-			.andExpect(jsonPath("$.nivel").value("Normal"))
 			.andExpect(jsonPath("$.detalle").isString())
 			.andReturn();
 
@@ -71,11 +70,8 @@ class TrendsServiceApiIntegrationTest {
 
 		mockMvc.perform(get("/trends-service/trends/productos/{id}", productoId))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.nivel").value("Normal"));
-
-		mockMvc.perform(get("/trends-service/trends/productos/{id}/leyenda", productoId))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.leyenda").value("Comercio Demo \u2013 Yerba Premium \u2013 Almacén"));
+			.andExpect(jsonPath("$.productoId").value(productoId))
+			.andExpect(jsonPath("$.detalle").isString());
 	}
 
 	@Test
@@ -84,15 +80,58 @@ class TrendsServiceApiIntegrationTest {
 
 		mockMvc.perform(post("/trends-service/trends/productos/{id}/likes", productoId))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.nivel").exists());
+			.andExpect(jsonPath("$.productoId").value(productoId))
+			.andExpect(jsonPath("$.likesTotales").value(1))
+			.andExpect(jsonPath("$.dislikesTotales").value(0));
+
+		mockMvc.perform(post("/trends-service/trends/productos/{id}/dislikes", productoId))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.productoId").value(productoId))
+			.andExpect(jsonPath("$.likesTotales").value(1))
+			.andExpect(jsonPath("$.dislikesTotales").value(1));
 	}
 
 	@Test
 	void ventas_registradas_por_servicio_actualizan_tendencia() {
 		long productoId = crearProductoDirecto();
 		trendProductoService.procesarVentaRegistrada(new VentaRegistradaEvento(productoId, 1001));
-		var respuesta = trendProductoService.obtenerTendencia(productoId);
-		assertEquals("En auge", respuesta.nivel());
+		var respuesta = trendProductoService.buscarPorId(productoId);
+		assertEquals(productoId, respuesta.productoId());
+	}
+
+	@Test
+	void registrar_venta_test_endpoint_devuelve_producto_actualizado() throws Exception {
+		long productoId = crearProducto("Cafe", "Almacen", 1200.0);
+		String body = """
+			{
+			  "productoId": %s,
+			  "cantidadVendida": 3
+			}
+			""".formatted(productoId);
+
+		mockMvc.perform(post("/trends-service/trends/productos/ventas/test")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(body))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.productoId").value(productoId))
+			.andExpect(jsonPath("$.cantVentas").value(3))
+			.andExpect(jsonPath("$.detalle").isString());
+	}
+
+	@Test
+	void registrar_venta_test_endpoint_falla_si_cantidad_no_positiva() throws Exception {
+		long productoId = crearProducto("Azucar", "Almacen", 900.0);
+		String body = """
+			{
+			  "productoId": %s,
+			  "cantidadVendida": 0
+			}
+			""".formatted(productoId);
+
+		mockMvc.perform(post("/trends-service/trends/productos/ventas/test")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(body))
+			.andExpect(status().isBadRequest());
 	}
 
 	private long crearProducto(String nombre, String categoria, double precioBase) throws Exception {

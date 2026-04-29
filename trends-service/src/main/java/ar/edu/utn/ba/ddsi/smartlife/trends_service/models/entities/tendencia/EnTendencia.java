@@ -7,15 +7,15 @@ import java.time.LocalDateTime;
 public final class EnTendencia extends EstadoTendencia {
 
 	@Override
-	protected Icono icono() {
+	public Icono icono() {
 		return Icono.FIRE;
 	}
 
 	@Override
-	protected String textoLeyenda(Producto producto) {
+	public String leyenda(Producto producto) {
 		String precio = formatoPrecio(producto.getPrecioBase());
-		return producto.getNombre() + SEP + producto.getComercio().getNombre()
-			+ " (" + producto.getCategoria() + SEP + precio + ")";
+		return producto.getNombre() + " " + producto.getComercio().getNombre()
+			+ " (" + producto.getCategoria() + " " + precio + ")";
 	}
 
 	@Override

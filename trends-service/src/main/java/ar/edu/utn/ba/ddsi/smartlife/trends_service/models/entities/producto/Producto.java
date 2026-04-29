@@ -17,9 +17,9 @@ public class Producto {
 	private String nombre;
 	private String categoria;
 	private double precioBase;
-	private long ventasAcumuladas;
-	private long likes;
-	private long dislikes;
+	private int ventasAcumuladas;
+	private int likes;
+	private int dislikes;
 	private LocalDateTime fechaUltimaVenta;
 	private boolean promocionBloqueadaPorDislikes;
 	private EstadoTendencia estado;
@@ -28,7 +28,7 @@ public class Producto {
 		this.estado = new Normal();
 	}
 
-	public void registrarVenta(long cantidad) {
+	public void registrarVenta(int cantidad) {
 		this.promocionBloqueadaPorDislikes = false;
 		this.ventasAcumuladas += cantidad;
 		this.fechaUltimaVenta = LocalDateTime.now();
@@ -45,19 +45,7 @@ public class Producto {
 		this.estado.dislikePara(this);
 	}
 
-	public String iconoTexto() {
-		return estado.iconoTexto();
-	}
-
-	public String leyenda() {
-		return estado.leyenda(this);
-	}
-
 	public String detalle() {
 		return estado.detalle(this);
-	}
-
-	public String etiqueta() {
-		return estado.etiqueta();
 	}
 }

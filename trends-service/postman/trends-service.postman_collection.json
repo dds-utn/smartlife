@@ -43,13 +43,13 @@
           }
         },
         {
-          "name": "Obtener leyenda (GET /trends-service/trends/productos/{id}/leyenda)",
+          "name": "Listar productos (GET /trends-service/trends/productos)",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}/leyenda",
+              "raw": "{{baseUrl}}/trends-service/trends/productos",
               "host": ["{{baseUrl}}"],
-              "path": ["trends-service", "trends", "productos", "{{productoId}}", "leyenda"]
+              "path": ["trends-service", "trends", "productos"]
             }
           }
         },
@@ -62,7 +62,19 @@
               "host": ["{{baseUrl}}"],
               "path": ["trends-service", "trends", "productos", "{{productoId}}", "likes"]
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Ejemplo respuesta",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"productoId\": 1,\n  \"likesTotales\": 1,\n  \"dislikesTotales\": 0\n}"
+            }
+          ]
         },
         {
           "name": "Dislike (POST /trends-service/trends/productos/{id}/dislikes)",
@@ -72,6 +84,126 @@
               "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}/dislikes",
               "host": ["{{baseUrl}}"],
               "path": ["trends-service", "trends", "productos", "{{productoId}}", "dislikes"]
+            }
+          },
+          "response": [
+            {
+              "name": "Ejemplo respuesta",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"productoId\": 1,\n  \"likesTotales\": 1,\n  \"dislikesTotales\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Registrar venta test (POST /trends-service/trends/productos/ventas/test)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productoId\": {{productoId}},\n  \"cantidadVendida\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/ventas/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "ventas", "test"]
+            }
+          },
+          "response": [
+            {
+              "name": "Ejemplo respuesta",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"productoId\": 1,\n  \"detalle\": \"📈 - Comercio Demo Producto Demo General\",\n  \"likes\": 1,\n  \"dislikes\": 1,\n  \"cantVentas\": 3\n}"
+            }
+          ]
+        },
+        {
+          "name": "Escenario completo 1 - Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comercioId\": 1,\n  \"nombre\": \"Producto Flujo\",\n  \"categoria\": \"General\",\n  \"precioBase\": 99.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos"]
+            }
+          }
+        },
+        {
+          "name": "Escenario completo 2 - Sumar like",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}/likes",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "{{productoId}}", "likes"]
+            }
+          }
+        },
+        {
+          "name": "Escenario completo 3 - Sumar dislike",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}/dislikes",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "{{productoId}}", "dislikes"]
+            }
+          }
+        },
+        {
+          "name": "Escenario completo 4 - Registrar venta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productoId\": {{productoId}},\n  \"cantidadVendida\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/ventas/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "ventas", "test"]
+            }
+          }
+        },
+        {
+          "name": "Escenario completo 5 - Consultar producto final",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["trends-service", "trends", "productos", "{{productoId}}"]
             }
           }
         }

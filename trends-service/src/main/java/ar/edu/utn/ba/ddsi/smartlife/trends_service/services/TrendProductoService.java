@@ -1,21 +1,23 @@
 package ar.edu.utn.ba.ddsi.smartlife.trends_service.services;
 
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.evento.VentaRegistradaEvento;
-import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.LeyendaResponse;
+import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoFeedbackResponse;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoCreateRequest;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoTrendResponse;
 
+import java.util.List;
+
 public interface TrendProductoService {
 
-	ProductoTrendResponse obtenerTendencia(Long productoId);
+    ProductoTrendResponse buscarPorId(Long idProducto);
 
-	LeyendaResponse obtenerLeyenda(Long productoId);
+    List<ProductoTrendResponse> buscarTodos();
 
 	ProductoTrendResponse crear(ProductoCreateRequest request);
 
-	ProductoTrendResponse registrarLike(Long productoId);
+	ProductoFeedbackResponse registrarLike(Long productoId);
 
-	ProductoTrendResponse registrarDislike(Long productoId);
+	ProductoFeedbackResponse registrarDislike(Long productoId);
 
 	/**
 	 * Procesa el evento de dominio {@code VentaRegistrada} emitido por {@code sales-service} cuando se confirma una venta.

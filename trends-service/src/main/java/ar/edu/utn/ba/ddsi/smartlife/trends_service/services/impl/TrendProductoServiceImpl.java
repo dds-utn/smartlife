@@ -1,7 +1,7 @@
 package ar.edu.utn.ba.ddsi.smartlife.trends_service.services.impl;
 
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.evento.VentaRegistradaEvento;
-import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.LeyendaResponse;
+import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoFeedbackResponse;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoCreateRequest;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoTrendResponse;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.exceptions.BusinessException;
@@ -12,6 +12,9 @@ import ar.edu.utn.ba.ddsi.smartlife.trends_service.repositories.ComercioReposito
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.repositories.ProductoRepository;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.services.TrendProductoService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TrendProductoServiceImpl implements TrendProductoService {
@@ -24,20 +27,20 @@ public class TrendProductoServiceImpl implements TrendProductoService {
 		this.comercioRepository = comercioRepository;
 	}
 
-	@Override
-	public ProductoTrendResponse obtenerTendencia(Long productoId) {
-		Producto producto = obtenerProducto(productoId);
-		return mapear(producto);
-	}
+    @Override
+    public ProductoTrendResponse buscarPorId(Long idProducto) {
+        Producto producto = obtenerProducto(idProducto);
+        return mapear(producto);
+    }
 
-	@Override
-	public LeyendaResponse obtenerLeyenda(Long productoId) {
-		Producto producto = obtenerProducto(productoId);
-		productoRepository.save(producto);
-		return new LeyendaResponse(producto.leyenda());
-	}
+    @Override
+    public List<ProductoTrendResponse> buscarTodos() {
+        return productoRepository.findAll().stream()
+            .map(this::mapear)
+            .collect(Collectors.toList());
+    }
 
-	@Override
+    @Override
 	public ProductoTrendResponse crear(ProductoCreateRequest request) {
 		validarCreacion(request);
 		Comercio comercio = obtenerComercio(request.comercioId());
@@ -51,19 +54,19 @@ public class TrendProductoServiceImpl implements TrendProductoService {
 	}
 
 	@Override
-	public ProductoTrendResponse registrarLike(Long productoId) {
+	public ProductoFeedbackResponse registrarLike(Long productoId) {
 		Producto producto = obtenerProducto(productoId);
 		producto.recibirLike();
 		productoRepository.save(producto);
-		return mapear(producto);
+		return mapearFeedback(producto);
 	}
 
 	@Override
-	public ProductoTrendResponse registrarDislike(Long productoId) {
+	public ProductoFeedbackResponse registrarDislike(Long productoId) {
 		Producto producto = obtenerProducto(productoId);
 		producto.recibirDislike();
 		productoRepository.save(producto);
-		return mapear(producto);
+		return mapearFeedback(producto);
 	}
 
 	@Override
@@ -79,11 +82,19 @@ public class TrendProductoServiceImpl implements TrendProductoService {
 	private ProductoTrendResponse mapear(Producto producto) {
 		productoRepository.save(producto);
 		return new ProductoTrendResponse(
+                producto.getId(),
+                producto.detalle(),
+                producto.getLikes(),
+                producto.getDislikes(),
+                producto.getVentasAcumuladas()
+		);
+	}
+
+	private ProductoFeedbackResponse mapearFeedback(Producto producto) {
+		return new ProductoFeedbackResponse(
 			producto.getId(),
-			producto.etiqueta(),
-			producto.iconoTexto(),
-			producto.leyenda(),
-			producto.detalle()
+			producto.getLikes(),
+			producto.getDislikes()
 		);
 	}
 

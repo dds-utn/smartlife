@@ -1,6 +1,7 @@
 package ar.edu.utn.ba.ddsi.smartlife.trends_service.controllers;
 
-import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.LeyendaResponse;
+import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.evento.VentaRegistradaEvento;
+import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoFeedbackResponse;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoCreateRequest;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoTrendResponse;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.services.TrendProductoService;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/trends-service/trends/productos")
@@ -25,13 +28,13 @@ public class TrendsProductoController {
 
 	@GetMapping("/{id}")
 	public ProductoTrendResponse obtenerPorId(@PathVariable Long id) {
-		return trendProductoService.obtenerTendencia(id);
+		return trendProductoService.buscarPorId(id);
 	}
 
-	@GetMapping("/{id}/leyenda")
-	public LeyendaResponse leyenda(@PathVariable Long id) {
-		return trendProductoService.obtenerLeyenda(id);
-	}
+    @GetMapping
+    public List<ProductoTrendResponse> obtenerTodosProductos() {
+        return trendProductoService.buscarTodos();
+    }
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -40,12 +43,18 @@ public class TrendsProductoController {
 	}
 
 	@PostMapping("/{id}/likes")
-	public ProductoTrendResponse like(@PathVariable Long id) {
+	public ProductoFeedbackResponse like(@PathVariable Long id) {
 		return trendProductoService.registrarLike(id);
 	}
 
 	@PostMapping("/{id}/dislikes")
-	public ProductoTrendResponse dislike(@PathVariable Long id) {
+	public ProductoFeedbackResponse dislike(@PathVariable Long id) {
 		return trendProductoService.registrarDislike(id);
+	}
+
+	@PostMapping("/ventas/test")
+	public ProductoTrendResponse registrarVentaTest(@RequestBody VentaRegistradaEvento evento) {
+		trendProductoService.procesarVentaRegistrada(evento);
+		return trendProductoService.buscarPorId(evento.productoId());
 	}
 }

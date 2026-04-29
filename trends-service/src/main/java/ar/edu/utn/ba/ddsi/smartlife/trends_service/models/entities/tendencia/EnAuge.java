@@ -1,19 +1,28 @@
 package ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.tendencia;
 
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.producto.Producto;
+import lombok.Setter;
 
 public final class EnAuge extends EstadoTendencia {
+    @Setter
+    private static int ventasMinimasParaAscender = 50000;
+
+    @Setter
+    private static int likesMinimasParaAscender = 20000;
+
+    @Setter
+    private static int likesMinimosParaDescender = 5000;
 
 	@Override
-	protected Icono icono() {
+	public Icono icono() {
 		return Icono.ROCKET;
 	}
 
 	@Override
-	protected String textoLeyenda(Producto producto) {
+	public String leyenda(Producto producto) {
 		String precio = formatoPrecio(producto.getPrecioBase());
-		return producto.getComercio().getNombre() + SEP + producto.getNombre()
-			+ " (" + producto.getCategoria() + SEP + precio + ")";
+		return producto.getComercio().getNombre() + " " + producto.getNombre()
+			+ " (" + producto.getCategoria() + " " + precio + ")";
 	}
 
 	@Override
@@ -22,7 +31,8 @@ public final class EnAuge extends EstadoTendencia {
 	}
 
 	private boolean cumpleParaEnTendencia(Producto producto) {
-		return ventasEnEsteEstado(producto) > 50000 && likesEnEsteEstado(producto) > 20000;
+		return ventasEnEsteEstado(producto) > ventasMinimasParaAscender
+                && likesEnEsteEstado(producto) > likesMinimasParaAscender;
 	}
 
 	private void promoverSiCorresponde(Producto producto) {
@@ -38,7 +48,7 @@ public final class EnAuge extends EstadoTendencia {
 
 	@Override
 	public void dislikePara(Producto producto) {
-		if (dislikesEnEsteEstado(producto) >= 5000) {
+		if (dislikesEnEsteEstado(producto) >= likesMinimosParaDescender) {
 			cambiarEstado(producto, new Normal());
 		}
 	}

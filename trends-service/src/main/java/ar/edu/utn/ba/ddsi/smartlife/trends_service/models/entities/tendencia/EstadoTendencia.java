@@ -5,27 +5,17 @@ import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.producto.Prod
 import java.util.Locale;
 
 public abstract class EstadoTendencia {
-
-	protected static final String SEP = " \u2013 ";
 	private long ventasIniciales;
 	private long likesIniciales;
 	private long dislikesIniciales;
 
-	public final String iconoTexto() {
-		return icono().texto();
-	}
+	public abstract String leyenda(Producto producto);
 
-	public final String leyenda(Producto producto) {
-		return textoLeyenda(producto);
-	}
+    public abstract Icono icono();
 
 	public final String detalle(Producto producto) {
-		return iconoTexto() + " - " + leyenda(producto);
+		return icono().texto() + " - " + leyenda(producto);
 	}
-
-	protected abstract Icono icono();
-
-	protected abstract String textoLeyenda(Producto producto);
 
 	public abstract String etiqueta();
 
