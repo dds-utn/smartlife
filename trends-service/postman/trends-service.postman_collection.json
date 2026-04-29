@@ -3,34 +3,12 @@
     "_postman_id": "c7e2b9a1-5d41-4f2e-9c12-aabbccddeeff",
     "name": "SmartLife Trends Service",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Colección para probar tendencias de consumo (trends-service). Puerto por defecto 8083."
+    "description": "Colección para probar tendencias de consumo (trends-service). Puerto por defecto 8083.\n\nSolo existe un producto sembrado por defecto (`productoId` = 1, \"Smart Tv 50\" / ElectroMart). No hay alta de productos vía API."
   },
   "item": [
     {
       "name": "Tendencias",
       "item": [
-        {
-          "name": "Crear producto (POST /trends-service/trends/productos)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"comercioId\": 1,\n  \"nombre\": \"Producto Demo\",\n  \"categoria\": \"General\",\n  \"precioBase\": 99.5\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/trends-service/trends/productos",
-              "host": ["{{baseUrl}}"],
-              "path": ["trends-service", "trends", "productos"]
-            },
-            "description": "comercioId 1 proviene del seed inicial (Comercio Demo)."
-          }
-        },
         {
           "name": "Obtener tendencia (GET /trends-service/trends/productos/{id})",
           "request": {
@@ -39,7 +17,8 @@
               "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}",
               "host": ["{{baseUrl}}"],
               "path": ["trends-service", "trends", "productos", "{{productoId}}"]
-            }
+            },
+            "description": "Único producto sembrado: id 1."
           }
         },
         {
@@ -50,7 +29,8 @@
               "raw": "{{baseUrl}}/trends-service/trends/productos",
               "host": ["{{baseUrl}}"],
               "path": ["trends-service", "trends", "productos"]
-            }
+            },
+            "description": "Lista con un único elemento (producto seed id 1)."
           }
         },
         {
@@ -128,30 +108,21 @@
               "_postman_previewlanguage": "json",
               "header": [],
               "cookie": [],
-              "body": "{\n  \"productoId\": 1,\n  \"detalle\": \"📈 - Comercio Demo Producto Demo General\",\n  \"likes\": 1,\n  \"dislikes\": 1,\n  \"cantVentas\": 3\n}"
+              "body": "{\n  \"productoId\": 1,\n  \"detalle\": \"📊 - ElectroMart Smart Tv 50 Electrónicos\",\n  \"likes\": 0,\n  \"dislikes\": 0,\n  \"cantVentas\": 3\n}"
             }
           ]
         },
         {
-          "name": "Escenario completo 1 - Crear producto",
+          "name": "Escenario completo 1 - Consultar producto",
           "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"comercioId\": 1,\n  \"nombre\": \"Producto Flujo\",\n  \"categoria\": \"General\",\n  \"precioBase\": 99.5\n}"
-            },
+            "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/trends-service/trends/productos",
+              "raw": "{{baseUrl}}/trends-service/trends/productos/{{productoId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["trends-service", "trends", "productos"]
+              "path": ["trends-service", "trends", "productos", "{{productoId}}"]
             }
-          }
+          },
+          "description": "Producto único seed (id 1)."
         },
         {
           "name": "Escenario completo 2 - Sumar like",

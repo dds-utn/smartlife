@@ -2,16 +2,13 @@ package ar.edu.utn.ba.ddsi.smartlife.trends_service.controllers;
 
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.evento.VentaRegistradaEvento;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoFeedbackResponse;
-import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoCreateRequest;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoTrendResponse;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.services.TrendProductoService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,12 +32,6 @@ public class TrendsProductoController {
     public List<ProductoTrendResponse> obtenerTodosProductos() {
         return trendProductoService.buscarTodos();
     }
-
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public ProductoTrendResponse crear(@RequestBody ProductoCreateRequest request) {
-		return trendProductoService.crear(request);
-	}
 
 	@PostMapping("/{id}/likes")
 	public ProductoFeedbackResponse like(@PathVariable Long id) {

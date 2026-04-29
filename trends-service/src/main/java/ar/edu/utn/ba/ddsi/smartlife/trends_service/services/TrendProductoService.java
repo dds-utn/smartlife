@@ -2,7 +2,6 @@ package ar.edu.utn.ba.ddsi.smartlife.trends_service.services;
 
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.evento.VentaRegistradaEvento;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoFeedbackResponse;
-import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoCreateRequest;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoTrendResponse;
 
 import java.util.List;
@@ -12,8 +11,6 @@ public interface TrendProductoService {
     ProductoTrendResponse buscarPorId(Long idProducto);
 
     List<ProductoTrendResponse> buscarTodos();
-
-	ProductoTrendResponse crear(ProductoCreateRequest request);
 
 	ProductoFeedbackResponse registrarLike(Long productoId);
 

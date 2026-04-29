@@ -2,11 +2,9 @@ package ar.edu.utn.ba.ddsi.smartlife.trends_service.services.impl;
 
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.evento.VentaRegistradaEvento;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoFeedbackResponse;
-import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoCreateRequest;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.dtos.producto.ProductoTrendResponse;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.exceptions.BusinessException;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.exceptions.ResourceNotFoundException;
-import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.comercio.Comercio;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.producto.Producto;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.repositories.ComercioRepository;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.repositories.ProductoRepository;
@@ -39,19 +37,6 @@ public class TrendProductoServiceImpl implements TrendProductoService {
             .map(this::mapear)
             .collect(Collectors.toList());
     }
-
-    @Override
-	public ProductoTrendResponse crear(ProductoCreateRequest request) {
-		validarCreacion(request);
-		Comercio comercio = obtenerComercio(request.comercioId());
-		Producto producto = new Producto();
-		producto.setComercio(comercio);
-		producto.setNombre(request.nombre().trim());
-		producto.setCategoria(request.categoria().trim());
-		producto.setPrecioBase(request.precioBase());
-		Producto guardado = productoRepository.save(producto);
-		return mapear(guardado);
-	}
 
 	@Override
 	public ProductoFeedbackResponse registrarLike(Long productoId) {
@@ -98,28 +83,8 @@ public class TrendProductoServiceImpl implements TrendProductoService {
 		);
 	}
 
-	private void validarCreacion(ProductoCreateRequest request) {
-		if (request.comercioId() == null) {
-			throw new BusinessException("comercioId es obligatorio");
-		}
-		if (request.nombre() == null || request.nombre().isBlank()) {
-			throw new BusinessException("nombre es obligatorio");
-		}
-		if (request.categoria() == null || request.categoria().isBlank()) {
-			throw new BusinessException("categoria es obligatorio");
-		}
-		if (request.precioBase() < 0) {
-			throw new BusinessException("precioBase no puede ser negativo");
-		}
-	}
-
 	private Producto obtenerProducto(Long productoId) {
 		return productoRepository.findById(productoId)
 			.orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-	}
-
-	private Comercio obtenerComercio(Long comercioId) {
-		return comercioRepository.findById(comercioId)
-			.orElseThrow(() -> new ResourceNotFoundException("Comercio no encontrado"));
 	}
 }

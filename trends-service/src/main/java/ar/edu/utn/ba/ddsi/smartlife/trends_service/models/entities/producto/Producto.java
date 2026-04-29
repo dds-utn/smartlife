@@ -3,13 +3,14 @@ package ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.producto;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.comercio.Comercio;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.tendencia.EstadoTendencia;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.tendencia.Normal;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 public class Producto {
 
 	private Long id;
