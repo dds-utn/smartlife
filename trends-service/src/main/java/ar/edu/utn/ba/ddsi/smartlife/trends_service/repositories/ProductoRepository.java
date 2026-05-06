@@ -9,6 +9,8 @@ public interface ProductoRepository {
 
 	List<Producto> findAll();
 
+	List<Producto> findAllEnTendencia();
+
 	Optional<Producto> findById(Long id);
 
 	Producto save(Producto producto);

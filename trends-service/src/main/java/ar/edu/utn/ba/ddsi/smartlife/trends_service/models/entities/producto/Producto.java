@@ -44,6 +44,10 @@ public class Producto {
 		this.estado.dislikePara(this);
 	}
 
+	public void evaluarEstadoPorPasoDelTiempo() {
+		this.estado.evaluarSegunPasoDelTiempo(this);
+	}
+
 	public String detalle() {
 		return estado.detalle(this);
 	}

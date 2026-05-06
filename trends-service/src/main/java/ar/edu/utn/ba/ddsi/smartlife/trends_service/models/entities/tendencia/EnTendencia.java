@@ -20,20 +20,21 @@ public final class EnTendencia extends EstadoTendencia {
 
 	@Override
 	public void likePara(Producto producto) {
-		volverANormalSiNoTieneVentasRecientes(producto);
+		evaluarSegunPasoDelTiempo(producto);
 	}
 
 	@Override
 	public void dislikePara(Producto producto) {
-		volverANormalSiNoTieneVentasRecientes(producto);
+		evaluarSegunPasoDelTiempo(producto);
 	}
 
 	@Override
 	public void nuevaVentaDe(Producto producto) {
-		volverANormalSiNoTieneVentasRecientes(producto);
+		evaluarSegunPasoDelTiempo(producto);
 	}
 
-	private void volverANormalSiNoTieneVentasRecientes(Producto producto) {
+	@Override
+	public void evaluarSegunPasoDelTiempo(Producto producto) {
 		LocalDateTime fechaUltimaVenta = producto.getFechaUltimaVenta();
 		LocalDateTime hace24Horas = LocalDateTime.now().minusHours(24);
 		if (fechaUltimaVenta == null || !fechaUltimaVenta.isAfter(hace24Horas)) {

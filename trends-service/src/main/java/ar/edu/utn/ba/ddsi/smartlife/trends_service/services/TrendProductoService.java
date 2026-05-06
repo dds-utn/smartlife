@@ -27,4 +27,10 @@ public interface TrendProductoService {
 	 * @param evento datos mínimos necesarios para correlacionar la venta con el producto en este servicio
 	 */
 	void procesarVentaRegistrada(VentaRegistradaEvento evento);
+
+	/**
+	 * Evalúa si los productos actualmente en estado {@code EnTendencia} deben volver a {@code Normal} por no haber
+	 * registrado ventas en las últimas 24 horas. Invocado periódicamente por el scheduler de tendencias.
+	 */
+	void evaluarTransicionesDeEstadoPorTiempo();
 }

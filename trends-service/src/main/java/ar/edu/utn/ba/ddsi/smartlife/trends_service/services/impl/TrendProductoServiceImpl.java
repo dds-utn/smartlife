@@ -83,6 +83,14 @@ public class TrendProductoServiceImpl implements TrendProductoService {
 		);
 	}
 
+	@Override
+	public void evaluarTransicionesDeEstadoPorTiempo() {
+		productoRepository.findAllEnTendencia().forEach(producto -> {
+			producto.evaluarEstadoPorPasoDelTiempo();
+			productoRepository.save(producto);
+		});
+	}
+
 	private Producto obtenerProducto(Long productoId) {
 		return productoRepository.findById(productoId)
 			.orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));

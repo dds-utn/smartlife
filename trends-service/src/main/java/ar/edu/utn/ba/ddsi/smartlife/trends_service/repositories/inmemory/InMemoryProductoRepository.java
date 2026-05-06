@@ -1,6 +1,7 @@
 package ar.edu.utn.ba.ddsi.smartlife.trends_service.repositories.inmemory;
 
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.producto.Producto;
+import ar.edu.utn.ba.ddsi.smartlife.trends_service.models.entities.tendencia.EnTendencia;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.repositories.ProductoRepository;
 import ar.edu.utn.ba.ddsi.smartlife.trends_service.utils.GeneradorIdSecuencial;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryProductoRepository implements ProductoRepository {
@@ -18,6 +20,13 @@ public class InMemoryProductoRepository implements ProductoRepository {
 	@Override
 	public List<Producto> findAll() {
 		return new ArrayList<>(productos);
+	}
+
+	@Override
+	public List<Producto> findAllEnTendencia() {
+		return productos.stream()
+			.filter(p -> p.getEstado() instanceof EnTendencia)
+			.collect(Collectors.toList());
 	}
 
 	@Override

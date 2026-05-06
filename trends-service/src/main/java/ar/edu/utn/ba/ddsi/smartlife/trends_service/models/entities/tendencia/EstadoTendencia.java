@@ -23,6 +23,8 @@ public abstract class EstadoTendencia {
 
 	public abstract void nuevaVentaDe(Producto producto);
 
+	public void evaluarSegunPasoDelTiempo(Producto producto) {}
+
 	protected final void iniciarDesde(Producto producto) {
 		this.ventasIniciales = producto.getVentasAcumuladas();
 		this.likesIniciales = producto.getLikes();

@@ -67,6 +67,24 @@ class DominioTrendsServiceTest {
 		assertInstanceOf(EnTendencia.class, producto.getEstado());
 	}
 
+	@Test
+	void evaluarPorTiempo_vuelve_a_normal_cuando_no_hubo_ventas_en_veinticuatro_horas() {
+		Producto producto = productoMinimo();
+		producto.setEstado(new EnTendencia());
+		producto.setFechaUltimaVenta(LocalDateTime.now().minusHours(25));
+		producto.evaluarEstadoPorPasoDelTiempo();
+		assertInstanceOf(Normal.class, producto.getEstado());
+	}
+
+	@Test
+	void evaluarPorTiempo_mantiene_en_tendencia_si_hubo_venta_reciente() {
+		Producto producto = productoMinimo();
+		producto.setEstado(new EnTendencia());
+		producto.setFechaUltimaVenta(LocalDateTime.now().minusHours(10));
+		producto.evaluarEstadoPorPasoDelTiempo();
+		assertInstanceOf(EnTendencia.class, producto.getEstado());
+	}
+
 	private static Producto productoMinimo() {
 		Comercio comercio = new Comercio();
 		comercio.setNombre("Comercio");
