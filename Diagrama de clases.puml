@@ -1,0 +1,77 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Comercio {
+    - id: long
+    - productos: Producto[]
+    - ventas: Ventas[]
+    - observers: ObservadorVenta[]
+}
+
+class Producto {
+    - id: long
+    - tipo: TipoDeProducto
+    - nombre: string
+    -precioBase: double
+
+    precioFinal(): double
+    totalDeImpuestos(): double
+}
+
+class TipoDeProducto {
+    - nombre: String
+    - impuestos: Impuesto[]
+}
+
+interface Impuesto {
+    calcularSobre(producto: Producto): double
+}
+
+class IVA implements Impuesto {
+    calcularSobre(producto: Producto): double
+}
+
+class EO implements Impuesto {
+    calcularSobre(producto: Producto): double
+}
+
+class EI implements Impuesto {
+    calcularSobre(producto: Producto): double
+}
+
+class ItemVenta {
+    - producto: Producto
+    - cantidad: int
+
+    + totalDeImpuestos(): double
+    + totalPrecioBase(): double
+}
+
+class Venta {
+    - id: long
+    - fecha: LocalDate
+    - items: ItemVenta[]
+    + total(): double
+    + totalDeImpuestos(): double
+    + totalPrecioBase(): double
+}
+
+interface ObservadorVenta {
+    serNotificadoDe(Venta venta): double
+}
+
+class SFFA implements ObservadorVenta {
+    serNotificadoDe(Venta venta): double
+}
+
+
+
+Comercio ->"*" ObservadorVenta
+Venta ->"*" ItemVenta
+ItemVenta -> Producto
+Comercio ->"*" Venta
+Comercio ->"*" Producto
+Producto -> TipoDeProducto
+TipoDeProducto ->"*" Impuesto
+Impuesto .> Producto
+@enduml

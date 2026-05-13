@@ -22,6 +22,8 @@
     <spring.boot.dependencies.version>4.0.5</spring.boot.dependencies.version>
     <spring.cloud-version>2025.1.1</spring.cloud-version>
     <lombok.version>1.18.42</lombok.version>
+    <mongodb.driver.version>5.0.1</mongodb.driver.version>
+    <mysql.connector.version>8.3.0</mysql.connector.version>
   </properties>
 
   <dependencyManagement>
@@ -40,6 +42,18 @@
         <version>${spring.cloud-version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-sync</artifactId>
+        <version>${mongodb.driver.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>${mysql.connector.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
