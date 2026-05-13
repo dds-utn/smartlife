@@ -4,6 +4,7 @@ import ar.edu.utn.ba.ddsi.smartlife.sales_service.dtos.error.ErrorResponse;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.exceptions.BusinessException;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.exceptions.ConflictException;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.exceptions.ResourceNotFoundException;
+import ar.edu.utn.frba.ddsi.common.smartlife.logging.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,23 +15,33 @@ import java.time.Instant;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+	private final Logger logger;
+
+	public GlobalExceptionHandler(Logger logger) {
+		this.logger = logger;
+	}
+
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+		logger.log(ex);
 		return build(HttpStatus.NOT_FOUND, "not_found", ex.getMessage());
 	}
 
 	@ExceptionHandler({BusinessException.class, IllegalArgumentException.class})
 	public ResponseEntity<ErrorResponse> handleBadRequest(RuntimeException ex) {
+		logger.log(ex);
 		return build(HttpStatus.BAD_REQUEST, "bad_request", ex.getMessage());
 	}
 
 	@ExceptionHandler(ConflictException.class)
 	public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
+		logger.log(ex);
 		return build(HttpStatus.CONFLICT, "conflict", ex.getMessage());
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
+		logger.log(ex);
 		return build(HttpStatus.INTERNAL_SERVER_ERROR, "internal_error", "Ocurrió un error interno");
 	}
 
