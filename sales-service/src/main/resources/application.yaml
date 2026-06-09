@@ -1,5 +1,16 @@
 spring:
   application:
     name: sales-service
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
 server:
   port: 8082
+
+smartlife:
+  events:
+    exchange: eventos
+    routing-keys:
+      venta-registrada: venta.registrada

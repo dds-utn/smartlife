@@ -3,6 +3,7 @@ package ar.edu.utn.ba.ddsi.smartlife.sales_service.services.impl;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.dtos.venta.ItemVentaRequest;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.dtos.venta.VentaCreateRequest;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.dtos.venta.VentaResponse;
+import ar.edu.utn.ba.ddsi.smartlife.sales_service.events.VentaEventPublisher;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.exceptions.BusinessException;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.exceptions.ResourceNotFoundException;
 import ar.edu.utn.ba.ddsi.smartlife.sales_service.models.entities.comercio.Comercio;
@@ -21,13 +22,16 @@ public class VentaServiceImpl implements VentaService {
 	private final ComercioRepository comercioRepository;
 	private final ProductoRepository productoRepository;
 	private final VentaRepository ventaRepository;
+	private final VentaEventPublisher ventaEventPublisher;
 
 	public VentaServiceImpl(ComercioRepository comercioRepository,
 					   ProductoRepository productoRepository,
-					   VentaRepository ventaRepository) {
+					   VentaRepository ventaRepository,
+					   VentaEventPublisher ventaEventPublisher) {
 		this.comercioRepository = comercioRepository;
 		this.productoRepository = productoRepository;
 		this.ventaRepository = ventaRepository;
+		this.ventaEventPublisher = ventaEventPublisher;
 	}
 
 	@Override
@@ -52,6 +56,7 @@ public class VentaServiceImpl implements VentaService {
 			throw new BusinessException(ex.getMessage());
 		}
 		ventaRepository.save(venta);
+		ventaEventPublisher.publicarVentaRegistrada(comercio, venta);
 
 		return new VentaResponse(
 			venta.getId(),

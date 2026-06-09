@@ -74,6 +74,46 @@ El puerto por defecto está definido en `trends-service/src/main/resources/appli
 
 ---
 
+## Mensajería asincrónica (RabbitMQ)
+
+`sales-service` publica el evento **`VentaRegistrada`** en el exchange topic `eventos` con routing key `venta.registrada`. `trends-service` consume desde la cola durable `trends.venta-registrada.queue` (bindeada a ese routing key) y actualiza el contador de ventas por producto. La cola tiene DLX configurada (`eventos.dlx` → `trends.venta-registrada.dlq`) y los listeners reintentan con backoff exponencial (3 intentos) antes de mandar a DLQ.
+
+### Levantar RabbitMQ local (sin docker-compose)
+
+Para desarrollo desde el IDE, basta con un contenedor:
+
+```bash
+docker run -d --name rabbitmq \
+  -p 5672:5672 -p 15672:15672 \
+  -e RABBITMQ_DEFAULT_USER=guest \
+  -e RABBITMQ_DEFAULT_PASS=guest \
+  rabbitmq:3.13-management
+```
+
+- AMQP en `localhost:5672`.
+- Management UI en `http://localhost:15672` (user/pass `guest`/`guest`).
+- Para persistir datos entre reinicios agregar `-v rabbitmq-data:/var/lib/rabbitmq`.
+
+Los `application.yaml` de ambos servicios apuntan por defecto a `localhost:5672`, así que con este contenedor levantado y los servicios corriendo con `mvn spring-boot:run` la integración queda funcionando.
+
+### Levantar todo el ecosistema (docker-compose)
+
+Desde la raíz:
+
+```bash
+docker compose up --build
+```
+
+Esto levanta `rabbitmq` + `sales-service` + `trends-service` en la misma red. Los servicios esperan al healthcheck de RabbitMQ antes de arrancar y se conectan vía el hostname `rabbitmq` (configurado por variable de entorno `SPRING_RABBITMQ_HOST`).
+
+- sales-service: `http://localhost:8082`
+- trends-service: `http://localhost:8083`
+- RabbitMQ management: `http://localhost:15672`
+
+Para apagar todo: `docker compose down`.
+
+---
+
 ## Construcción de imágenes Docker
 
 El proyecto es multi-módulo Maven. **El contexto de construcción debe ser la raíz del repositorio**; si se limita a la carpeta del servicio, Maven no encontrará el POM padre ni el resto del reactor.
