@@ -1,0 +1,177 @@
+{
+  "info": {
+    "_postman_id": "b0f5f4d6-4c89-4f50-9ed5-1b2f4669a0c2",
+    "name": "SmartLife Sales Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleccion para probar endpoints de productos, precios y ventas del modulo sales-service."
+  },
+  "item": [
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Crear producto (POST /sales-service/productos)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comercioId\": 1,\n  \"tipoProductoId\": 2,\n  \"precioBase\": 100.0,\n  \"descripcion\": \"Smart TV 50\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-service/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-service",
+                "productos"
+              ]
+            },
+            "description": "tipoProductoId: 1=Hogar, 2=Electronico (seed inicial)"
+          }
+        },
+        {
+          "name": "Listar productos (GET /sales-service/productos)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sales-service/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-service",
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener producto por id (GET /sales-service/productos/{id})",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sales-service/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-service",
+                "productos",
+                "{{productoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar producto (PUT /sales-service/productos)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{productoId}},\n  \"comercioId\": 1,\n  \"tipoProductoId\": 1,\n  \"precioBase\": 120.0,\n  \"descripcion\": \"Smart TV 50 - Actualizado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-service/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-service",
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto (DELETE /sales-service/productos/{id})",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/sales-service/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-service",
+                "productos",
+                "{{productoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar precio final (GET /sales-service/productos/{id}/precio)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sales-service/productos/{{productoId}}/precio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-service",
+                "productos",
+                "{{productoId}}",
+                "precio"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ventas",
+      "item": [
+        {
+          "name": "Registrar venta (POST /sales-service/ventas)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comercioId\": 1,\n  \"items\": [\n    {\n      \"productoId\": {{productoId}},\n      \"cantidad\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-service/ventas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sales-service",
+                "ventas"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8082"
+    },
+    {
+      "key": "productoId",
+      "value": "1"
+    }
+  ]
+}
