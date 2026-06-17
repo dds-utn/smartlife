@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: security-service-in-home
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+server:
+  port: 8085
+
+smartlife:
+  hogar:
+    id: ${SMARTLIFE_HOGAR_ID:1}
+    direccion: ${SMARTLIFE_HOGAR_DIRECCION:Av. Siempre Viva 742}
+    nro-telefono: ${SMARTLIFE_HOGAR_TELEFONO:+54 11 4000-0000}
+  seguridad:
+    grado-riesgo-tolerable: ${SMARTLIFE_GRADO_RIESGO_TOLERABLE:MEDIO}
+    numero-policia: ${SMARTLIFE_NUMERO_POLICIA:911}
+    numero-bomberos: ${SMARTLIFE_NUMERO_BOMBEROS:100}
+    numero-persona-confiable: ${SMARTLIFE_NUMERO_CONFIABLE:+54 11 5555-5555}
+    tiene-rociadores: ${SMARTLIFE_TIENE_ROCIADORES:true}
+    tiene-elevador-tension: ${SMARTLIFE_TIENE_ELEVADOR:true}
+  events:
+    exchange: eventos
+    routing-keys:
+      amenaza-detectada: amenaza.detectada
+      sensor-dato: sensor.dato
+    queues:
+      sensor-datos: security-in-home.sensor-datos.queue

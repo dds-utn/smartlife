@@ -57,6 +57,47 @@ services:
     networks:
       - smartlife
 
+  security-service:
+    build:
+      context: .
+      dockerfile: security-service/Dockerfile
+      args:
+        SERVICE_NAME: security-service
+    container_name: smartlife-security-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: "5672"
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    ports:
+      - "8084:8084"
+    networks:
+      - smartlife
+
+  security-service-in-home:
+    build:
+      context: .
+      dockerfile: security-service-in-home/Dockerfile
+      args:
+        SERVICE_NAME: security-service-in-home
+    container_name: smartlife-security-service-in-home
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: "5672"
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      SMARTLIFE_HOGAR_ID: "1"
+    ports:
+      - "8085:8085"
+    networks:
+      - smartlife
+
 networks:
   smartlife:
     driver: bridge

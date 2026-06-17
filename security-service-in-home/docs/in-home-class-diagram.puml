@@ -1,0 +1,198 @@
+@startuml
+'https://plantuml.com/class-diagram
+' Diagrama de clases del dominio del Security Service - In Home (borde).
+' Fiel a la "Propuesta Casa Segura" (Singleton + Template Method + Command).
+
+skinparam classAttributeIconSize 0
+
+class Hogar <<Singleton>> {
+    - id: Long
+    - direccion: String
+    - nroTelefono: String
+    - fechaAlta: LocalDate
+    - eventos: List<Evento>
+    + {static} getInstance(): Hogar
+    + agregarEvento(Evento): void
+}
+
+class Evento {
+    - id: Long
+    - fechaHora: LocalDateTime
+    - tipo: TipoDeEvento
+    - gradoRiesgo: GradoRiesgo
+    - accionesEjecutadas: List<String>
+}
+
+enum TipoDeEvento {
+    ROBO
+    INCENDIO
+    FUGA_DE_GAS
+    TENSION_BAJA
+}
+
+enum GradoRiesgo {
+    BAJO
+    MEDIO
+    ALTO
+}
+
+package datos {
+    class DatoRobo {
+        - nivelDePresenciaHumana: Double
+        - gradoDeConfiabilidad: Double
+    }
+    class Tension {
+        - valor: Double
+    }
+}
+
+' ===== Sensores =====
+class SensorDeMovimiento {
+    - receptor: ReceptorDeRobo
+    + recibirDato(String): void
+}
+class CamaraDeSeguridad {
+    - receptor: ReceptorDeRobo
+    + recibirDato(String): void
+}
+class SensorDeHumo {
+    - receptor: ReceptorDeIncendio
+    + recibirDato(String): void
+}
+class SensorTensionLuz {
+    - receptor: ReceptorDeTensionLuz
+    + recibirDato(String): void
+}
+class DetectorFugaDeGas {
+    - receptor: ReceptorFugaDeGas
+    + recibirDato(String): void
+}
+
+' ===== Receptores (Template Method para robo) =====
+abstract class ReceptorDeRobo {
+    # gradoRiesgoTolerable: GradoRiesgo
+    # accionador: Accionador
+    + evaluar(String): void
+    # {abstract} decodificarLosDatos(String): DatoRobo
+    # {abstract} analizarGradoRiesgo(DatoRobo): GradoRiesgo
+    # {abstract} existeRobo(GradoRiesgo): boolean
+}
+class ReceptorRoboSensorMovimiento
+class ReceptorRoboCamaraSeguridad
+
+class ReceptorDeIncendio {
+    - valorMax: Double
+    - accionador: Accionador
+    + evaluar(Double): void
+}
+class ReceptorDeTensionLuz {
+    - valorTensionMin: Double
+    - valorTensionMax: Double
+    - accionador: Accionador
+    + evaluar(Tension): void
+}
+class ReceptorFugaDeGas {
+    - accionador: Accionador
+    + evaluar(Boolean): void
+}
+
+' ===== Accionador + Comandos (Command) =====
+class Accionador {
+    - comandos: List<Comando>
+    - amenazaListener: AmenazaListener
+    + sucedeEvento(TipoDeEvento): void
+    + sucedeEvento(TipoDeEvento, GradoRiesgo): void
+    - registrarEvento(TipoDeEvento, GradoRiesgo): Evento
+    - accionar(Evento): void
+}
+
+interface AmenazaListener {
+    + onAmenazaDetectada(Evento): void
+}
+
+interface Comando {
+    + accionar(Hogar): void
+    + descripcion(): String
+}
+
+class SonarAlarma
+class LlamarPolicia
+class LlamarABomberos
+class LlamarAConfiable
+class AbrirRociadoresDeAgua
+class CerrarRociadoresDeAgua
+class DarAvisoPorPantalla
+class ElevarTension
+
+' ===== Actuadores =====
+class Alarma {
+    + sonar(): void
+}
+class Llamador {
+    + llamar(String, String): void
+}
+class Pantalla {
+    + mostrar(String): void
+}
+class RociadorDeAgua {
+    + abrir(): void
+    + cerrar(): void
+}
+class ElevadorDeTension {
+    + elevarTension(): void
+}
+
+class SensorDataListener {
+    + onDatoSensor(DatoSensorEvent): void
+}
+
+' ===== Relaciones =====
+SensorDataListener --> SensorDeMovimiento
+SensorDataListener --> CamaraDeSeguridad
+SensorDataListener --> SensorDeHumo
+SensorDataListener --> SensorTensionLuz
+SensorDataListener --> DetectorFugaDeGas
+
+Hogar "1" o-- "*" Evento
+Evento --> TipoDeEvento
+Evento --> GradoRiesgo
+
+ReceptorDeRobo <|-- ReceptorRoboSensorMovimiento
+ReceptorDeRobo <|-- ReceptorRoboCamaraSeguridad
+ReceptorDeRobo ..> DatoRobo
+ReceptorDeTensionLuz ..> Tension
+
+SensorDeMovimiento --> ReceptorDeRobo
+CamaraDeSeguridad --> ReceptorDeRobo
+SensorDeHumo --> ReceptorDeIncendio
+SensorTensionLuz --> ReceptorDeTensionLuz
+DetectorFugaDeGas --> ReceptorFugaDeGas
+
+ReceptorDeRobo --> Accionador
+ReceptorDeIncendio --> Accionador
+ReceptorDeTensionLuz --> Accionador
+ReceptorFugaDeGas --> Accionador
+
+Accionador "1" o-- "*" Comando
+Accionador ..> AmenazaListener
+Accionador ..> Evento
+
+Comando <|.. SonarAlarma
+Comando <|.. LlamarPolicia
+Comando <|.. LlamarABomberos
+Comando <|.. LlamarAConfiable
+Comando <|.. AbrirRociadoresDeAgua
+Comando <|.. CerrarRociadoresDeAgua
+Comando <|.. DarAvisoPorPantalla
+Comando <|.. ElevarTension
+
+SonarAlarma --> Alarma
+LlamarPolicia --> Llamador
+LlamarABomberos --> Llamador
+LlamarAConfiable --> Llamador
+AbrirRociadoresDeAgua --> RociadorDeAgua
+CerrarRociadoresDeAgua --> RociadorDeAgua
+DarAvisoPorPantalla --> Pantalla
+ElevarTension --> ElevadorDeTension
+
+@enduml

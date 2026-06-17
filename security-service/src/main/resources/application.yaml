@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: security-service
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        default-requeue-rejected: false
+server:
+  port: 8084
+
+smartlife:
+  events:
+    exchange: eventos
+    routing-keys:
+      amenaza-detectada: amenaza.detectada
+      hogar-en-peligro: hogar.en-peligro
+      hogar-seguro: hogar.seguro
+    queues:
+      amenaza-detectada: security.amenaza-detectada.queue

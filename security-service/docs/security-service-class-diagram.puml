@@ -1,0 +1,111 @@
+@startuml
+'https://plantuml.com/class-diagram
+' Diagrama de clases del Security Service (nube): gestiona hogares y eventos,
+' consume AmenazaDetectada y publica HogarEnPeligro / HogarSeguro.
+
+skinparam classAttributeIconSize 0
+
+class Hogar {
+    - id: Long
+    - direccion: String
+    - nroTelefono: String
+    - fechaAlta: LocalDate
+    - estado: EstadoHogar
+    - eventos: List<Long>
+    + agregarEvento(Long): void
+    + marcarEnPeligro(): void
+    + marcarSeguro(): void
+    + estaSeguro(): boolean
+}
+
+enum EstadoHogar {
+    SEGURO
+    EN_PELIGRO
+}
+
+class Evento {
+    - id: Long
+    - hogarId: Long
+    - tipo: TipoDeEvento
+    - fechaHora: LocalDateTime
+    - gradoRiesgo: GradoRiesgo
+    - accionesEjecutadas: List<String>
+}
+
+enum TipoDeEvento {
+    ROBO
+    INCENDIO
+    FUGA_DE_GAS
+    TENSION_BAJA
+}
+
+enum GradoRiesgo {
+    BAJO
+    MEDIO
+    ALTO
+}
+
+interface HogarRepository {
+    + findById(Long): Optional<Hogar>
+    + findAll(): List<Hogar>
+    + save(Hogar): Hogar
+}
+interface EventoRepository {
+    + findById(Long): Optional<Evento>
+    + findByHogarId(Long): List<Evento>
+    + save(Evento): Evento
+}
+
+interface HogarService {
+    + findById(Long): HogarResponse
+    + findEventos(Long): List<EventoResponse>
+    + actualizarSeguridad(Long, SeguridadUpdateRequest): HogarResponse
+}
+interface EventoService {
+    + findById(Long): EventoResponse
+    + registrarAmenaza(AmenazaDetectadaEvent): EventoResponse
+}
+class HogarServiceImpl
+class EventoServiceImpl
+
+class HogarController {
+    + getById(Long): HogarResponse
+    + getEventos(Long): List<EventoResponse>
+    + actualizarSeguridad(Long, SeguridadUpdateRequest): HogarResponse
+}
+class EventoController {
+    + getById(Long): EventoResponse
+}
+
+class AmenazaDetectadaListener {
+    + onAmenazaDetectada(AmenazaDetectadaEvent): void
+}
+class HogarEventPublisher {
+    + publicarHogarEnPeligro(Long, String): void
+    + publicarHogarSeguro(Long): void
+}
+
+' ===== Relaciones =====
+Hogar --> EstadoHogar
+Evento --> TipoDeEvento
+Evento --> GradoRiesgo
+
+HogarService <|.. HogarServiceImpl
+EventoService <|.. EventoServiceImpl
+
+HogarController --> HogarService
+EventoController --> EventoService
+
+HogarServiceImpl --> HogarRepository
+HogarServiceImpl --> EventoRepository
+HogarServiceImpl --> HogarEventPublisher
+EventoServiceImpl --> EventoRepository
+EventoServiceImpl --> HogarRepository
+EventoServiceImpl --> HogarEventPublisher
+
+AmenazaDetectadaListener --> EventoService
+
+HogarRepository ..> Hogar
+EventoRepository ..> Evento
+
+@enduml

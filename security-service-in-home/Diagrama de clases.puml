@@ -1,0 +1,174 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Hogar <<Singleton>> {
+    - {static} instance: Hogar
+    - direccion: String
+    - telefono: String
+    - id: String
+    - fechaAlta: LocalDateTime
+    - eventos: List<Evento>
+    - estado: EstadoHogar
+    + agregarEvento(evento)
+    + {static} getInstance(): Hogar
+}
+
+enum EstadoHogar {
+    EN_PELIGRO
+    A_SALVO
+}
+
+class DatoRobo <<Record>> {
+    - nivelPresenciaHumana: Double
+    - gradoDeConfiabilidad: Double
+}
+
+enum GradoRiesgo {
+    BAJO
+    MEDIO
+    ALTO
+}
+
+abstract class ReceptorRobo  {
+    - accionador: Accionador
+    + evaluar(string)
+    # {abstract} decodificarDatos(string): DatoRobo
+    # {abstract} gradoRiesgo(datoRobo): GradoRiesgo
+    # {abstract} existeRobo(gradoRiesgo): boolean
+}
+
+class ReceptorRoboSensorMovimiento extends ReceptorRobo {
+    # decodificarDatos(string): DatoRobo
+    # gradoRiesgo(datoRobo): GradoRiesgo
+    # existeRobo(gradoRiesgo): boolean
+}
+
+class ReceptorRoboCamaraSeguridad extends ReceptorRobo {
+    # decodificarDatos(string): DatoRobo
+    # gradoRiesgo(datoRobo): GradoRiesgo
+    # existeRobo(gradoRiesgo): boolean
+}
+
+class SensorDeMovimiento {
+    - receptor: ReceptorRoboSensorMovimiento
+    + recibirDato(String)
+}
+
+class CamaraDeSeguridad {
+    - receptor: ReceptorRoboCamaraSeguridad
+    + recibirDato(String)
+}
+
+class SensoreHumo {
+    - receptor: ReceptorDeIncendio
+    + recibirDato(dato)
+}
+
+class ReceptorDeIncendio {
+    - accionador: Accionador
+    - valorMax: double
+    + evaluar(dato)
+}
+
+class SensorTensionLuz {
+    - receptor: ReceptorTensionDeLuz
+    + recibirDato(dato)
+}
+
+class ReceptorTensionDeLuz {
+    - accionador: Accionador
+    - valorTensionMin: Double
+    - valorTensionMax: Double
+    + evaluar(dato)
+}
+
+enum TipoEvento {
+    ROBO
+    INCENDIO
+    TENSION_BAJA
+    FUGA_GAS
+}
+
+class Evento {
+    tipo: TipoEvento
+    fechaHora: LocalDateTime
+}
+
+class Accionador {
+    - comandos: List<Comando>
+    - registrarEvento(tipoDeEvento)
+    - reaccionar()
+    + sucedeEvento(tipoDeEvento)
+}
+
+interface Comando {
+    + accionar()
+}
+
+class LlamarAPolicia implements Comando {
+    - llamador: Llamador
+    + accionar()
+}
+
+class LlamarAConfiable implements Comando {
+    - nroPersonaConfiable
+    - llamador: Llamador
+    + accionar()
+}
+
+class LlamarABomberos implements Comando {
+    - llamador: Llamador
+    + accionar()
+}
+
+class Llamador {
+    + llamar(numero, mensaje)
+}
+
+class HacerSonarAlarma implements Comando {
+    + accionar()
+}
+
+class MostrarAvisoEnPantalla implements Comando {
+    + accionar()
+}
+
+class ElevarTension implements Comando {
+    - elevador
+    + accionar()
+}
+
+class ElevadorDeTension {
+
+   + elevarTension()
+}
+
+class AbrirRociadoresDeAgua implements Comando {
+    - rociador
+    + accionar()
+}
+
+class RociadorDeAgua {
+    + abrir()
+}
+
+
+CamaraDeSeguridad --> ReceptorRoboCamaraSeguridad
+SensorDeMovimiento --> ReceptorRoboSensorMovimiento
+ReceptorRobo --> Accionador
+ReceptorRobo ..> DatoRobo
+Hogar -->"*" Evento
+Accionador ..> Hogar
+Accionador ..> Evento
+Accionador -->"*" Comando
+LlamarABomberos --> Llamador
+LlamarAConfiable --> Llamador
+LlamarAPolicia --> Llamador
+AbrirRociadoresDeAgua --> RociadorDeAgua
+ElevarTension --> ElevadorDeTension
+SensoreHumo --> ReceptorDeIncendio
+ReceptorDeIncendio --> Accionador
+ReceptorTensionDeLuz --> Accionador
+SensorTensionLuz --> ReceptorTensionDeLuz
+
+@enduml

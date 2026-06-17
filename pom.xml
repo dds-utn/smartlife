@@ -13,6 +13,8 @@
     <module>common-lib</module>
     <module>sales-service</module>
     <module>trends-service</module>
+    <module>security-service-in-home</module>
+    <module>security-service</module>
   </modules>
 
   <properties>
